@@ -3,6 +3,7 @@ import { AppState, AnswerChoice } from './types';
 import type { Question, Answer, PartyResult, SavedResult } from './types';
 import { generateQuestions, evaluateAnswers } from './services/geminiService';
 import { electionInfo } from './data/electionData';
+import { parties } from './data/partyData';
 import Loader from './components/Loader';
 import ResultsTable from './components/ResultsTable';
 import HistoryView from './components/HistoryView';
@@ -68,13 +69,35 @@ const App: React.FC = () => {
 
         setAppState(AppState.EVALUATING);
         evaluateAnswers(answersToEvaluate)
-            .then(res => {
-                setResults(res);
+            .then(apiResults => {
+                const enrichedResults = apiResults.map(apiResult => {
+                    const staticPartyData = parties.find(p => p.name === apiResult.name);
+                    if (staticPartyData) {
+                        return {
+                            ...staticPartyData, // provides candidates, leader, etc.
+                            ...apiResult // provides matchPercentage, reasoning
+                        };
+                    }
+                    // Fallback for safety, though Gemini should return matching names.
+                    // This ensures the app doesn't crash if a name mismatch occurs.
+                    return {
+                        name: apiResult.name,
+                        matchPercentage: apiResult.matchPercentage,
+                        reasoning: apiResult.reasoning,
+                        leader: 'N/A',
+                        ideology: 'N/A',
+                        motto: 'N/A',
+                        candidates: [], // Ensures .join() won't crash
+                        summary: 'N/A',
+                    };
+                });
+
+                setResults(enrichedResults);
                 setAppState(AppState.RESULTS);
 
                 const newSavedResult: SavedResult = {
                     date: new Date().toISOString(),
-                    results: res,
+                    results: enrichedResults,
                     answers: answersToEvaluate,
                 };
                 try {
