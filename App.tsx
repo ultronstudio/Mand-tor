@@ -202,7 +202,7 @@ const App: React.FC = () => {
             case AppState.WELCOME:
                 return (
                     <div className="text-center p-8 bg-secondary rounded-lg shadow-lg border border-gray-700">
-                        <h1 className="text-4xl font-bold text-accent mb-2">Volební Kalkulačka AI {electionInfo.year}</h1>
+                        <h1 className="text-4xl font-bold text-accent mb-2">Mandátor&nbsp;v{electionInfo.year}</h1>
                         <p className="text-lg text-dark-text mb-6">{electionInfo.name}</p>
                         <p className="max-w-2xl mx-auto mb-8">
                             Odpovězte na sadu otázek a naše umělá inteligence vám ukáže, která politická strana nejlépe odpovídá vašim názorům.
