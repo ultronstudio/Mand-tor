@@ -3,13 +3,13 @@ import type { Answer, Party, PartyResult } from '../types';
 import { electionInfo } from '../data/electionData';
 import { parties } from '../data/partyData';
 
-const API_KEY = process.env.API_KEY;
+const GEMINI_KEY = process.env.GEMINI_KEY;
 
-if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+if (!GEMINI_KEY) {
+    throw new Error("GEMINI_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
 
 export async function generateQuestions(): Promise<string[]> {
     const electionContext = `${electionInfo.name} ${electionInfo.year}`;
