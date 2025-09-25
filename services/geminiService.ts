@@ -3,7 +3,7 @@ import type { Answer, Party, PartyResult } from '../types';
 import { electionInfo } from '../data/electionData';
 import { parties } from '../data/partyData';
 
-const GEMINI_KEY = process.env.GEMINI_KEY;
+const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_KEY;
 
 if (!GEMINI_KEY) {
     throw new Error("GEMINI_KEY environment variable not set");
