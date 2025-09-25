@@ -9,10 +9,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    const GEMINI_KEY = process.env.GEMINI_KEY;
-    if (!GEMINI_KEY) return res.status(500).json({ error: 'Missing GEMINI_KEY on server' });
+    const API_KEY = process.env.API_KEY;
+    if (!API_KEY) return res.status(500).json({ error: 'Missing API_KEY on server' });
 
-    const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const { answers, parties, electionInfo } = (req.body ?? {}) as {
       answers: Answer[]; parties: Party[]; electionInfo: ElectionInfo;
