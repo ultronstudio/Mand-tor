@@ -25,6 +25,12 @@ export interface Party {
     summary: string;
 }
 
+export interface PartyAPIResult {
+    name: string;
+    matchPercentage: number;
+    reasoning: string;
+}
+
 export interface PartyResult extends Party {
     matchPercentage: number;
     reasoning: string;

@@ -31,14 +31,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     );
 
     const prompt = `
-Jste neutrální český politický analytik...
-Kontext voleb: ${electionInfo?.name ?? ''} ${electionInfo?.year ?? ''}
-Strany: ${partiesInfoString}
-Odpovědi: ${answersInfoString}
+Jste vysoce pokročilý, nestranný a objektivní český politický analytik. Vaším úkolem je analyzovat odpovědi uživatele a co nejpřesněji vyhodnotit jeho procentuální shodu s politickými stranami kandidujícími ve volbách.
 
-Vrať JSON: { "results": [{ "name": string, "matchPercentage": number, "reasoning": string }] }
-Seřazeno DESC podle matchPercentage.
-    `.trim();
+Kontext voleb: ${electionInfo?.name ?? ''} ${electionInfo?.year ?? ''}
+
+Seznam stran a jejich základní charakteristika:
+${partiesInfoString}
+
+Odpovědi uživatele:
+${answersInfoString}
+
+Pokyny pro vyhodnocení:
+1.  **Analýza odpovědí:** Pečlivě projděte každou odpověď uživatele.
+2.  **Váha otázek:** Otázkám označeným jako \`important: true\` přikládejte **výrazně vyšší váhu** při výpočtu celkové shody. Tyto otázky jsou pro uživatele klíčové.
+3.  **Důvody uživatele:** Pokud je u důležité otázky uveden \`reason\`, použijte ho k hlubšímu pochopení postoje uživatele. Tento kontext vám pomůže přesněji určit shodu se stranou, která může mít na dané téma komplexnější názor.
+4.  **Výpočet shody (\`matchPercentage\`):** Pro každou stranu vypočítejte shodu v procentech od 0 do 100. Shoda musí být založena na porovnání programů a známých postojů stran s odpověďmi uživatele, s přihlédnutím k váze důležitých otázek.
+5.  **Zdůvodnění (\`reasoning\`):** Pro každou stranu napište stručné (1-2 věty), neutrální a výstižné zdůvodnění výsledné shody. Zmiňte klíčové oblasti shody nebo neshody.
+6.  **Seřazení:** Výsledky seřaďte sestupně podle \`matchPercentage\`.
+
+Výstup musí být POUZE JSON objekt, který striktně dodržuje následující schéma. Neuvádějte žádný text před ani za JSON objektem.
+{
+  "results": [
+    {
+      "name": "Jméno strany",
+      "matchPercentage": 95,
+      "reasoning": "Vysoká shoda v ekonomických otázkách a v postoji k EU. Menší rozdíly panují v oblasti sociální politiky."
+    }
+  ]
+}
+`.trim();
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",

@@ -1,4 +1,4 @@
-import type { Answer, PartyResult } from '../types';
+import type { Answer, PartyAPIResult } from '../types';
 import { electionInfo } from '../data/electionData';
 import { parties } from '../data/partyData';
 
@@ -13,7 +13,7 @@ export async function generateQuestions(): Promise<string[]> {
   return data.questions as string[];
 }
 
-export async function evaluateAnswers(answers: any[]): Promise<PartyResult[]> {
+export async function evaluateAnswers(answers: any[]): Promise<PartyAPIResult[]> {
   const r = await fetch('/api/evaluate-answers', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -21,5 +21,5 @@ export async function evaluateAnswers(answers: any[]): Promise<PartyResult[]> {
   });
   if (!r.ok) throw new Error(`evaluateAnswers failed: ${r.status}`);
   const data = await r.json();
-  return data.results as PartyResult[];
+  return data.results as PartyAPIResult[];
 }
