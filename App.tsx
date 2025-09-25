@@ -297,10 +297,34 @@ const App: React.FC = () => {
                         />
                     );
                 }
+
+                const handleViewHistoryItem = (item: SavedResult) => {
+                    // Check if data is old/unenriched by looking for a property that was added later, like 'candidates'.
+                    const isEnriched = item.results[0] && 'candidates' in item.results[0];
+                    if (isEnriched) {
+                        setViewingHistoryItem(item);
+                        return;
+                    }
+
+                    // Data is from an old version, enrich it before viewing.
+                    const enrichedResults = item.results.map(oldResult => {
+                        const staticData = parties.find(p => p.name === oldResult.name);
+                        return {
+                            ...(staticData || { 
+                                leader: 'N/A', ideology: 'N/A', motto: 'N/A', 
+                                summary: 'N/A', candidates: [] 
+                            }),
+                            ...oldResult
+                        };
+                    });
+                    
+                    setViewingHistoryItem({ ...item, results: enrichedResults });
+                };
+
                 return (
                     <HistoryView
                         history={history}
-                        onViewItem={item => setViewingHistoryItem(item)}
+                        onViewItem={handleViewHistoryItem}
                         onBack={() => setAppState(AppState.WELCOME)}
                     />
                 );
